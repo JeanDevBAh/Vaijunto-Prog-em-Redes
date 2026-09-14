@@ -2,6 +2,7 @@ package sessao;
 
 import client.VaiJuntoClient;
 import model.TipoUser;
+import java.io.IOException;
 
 /**
  * Estado da sessão do usuário logado. Guarda também a instância do
@@ -47,5 +48,9 @@ public class SessaoUsuario {
      */
     public void atualizarTipoUsuario(TipoUser novoTipo) {
         this.tipoUser = novoTipo;
+    }
+
+    public void fechar() throws IOException {
+        client.close();
     }
 }

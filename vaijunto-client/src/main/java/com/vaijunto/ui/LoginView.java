@@ -15,6 +15,7 @@ import model.TipoUser;
 import network.DTOResponse;
 import sessao.SessaoUsuario;
 import util.ClienteTask;
+import java.util.Map;
 
 public class LoginView extends VBox {
 
@@ -85,14 +86,9 @@ public class LoginView extends VBox {
                         return;
                     }
 
-                    String token = (String) resposta.getDados();
-                    // O tipoUser não vem na resposta de LOGIN -- o
-                    // protocolo atual só devolve o token. Até o servidor
-                    // passar a incluir o tipoUser aqui, ficamos sem esse
-                    // dado logo após o login (ver observação abaixo).
-                    TipoUser tipoAssumido = comboTipo.getValue() != null
-                            ? comboTipo.getValue()
-                            : TipoUser.PASSAGEIRO;
+                    Map<?, ?> dados = (Map<?, ?>) resposta.getDados();
+                    String token = (String) dados.get("token");
+                    TipoUser tipoAssumido = TipoUser.valueOf((String) dados.get("tipoUser"));
 
                     SessaoUsuario sessao = new SessaoUsuario(token, login, tipoAssumido, client);
                     RoteadorDashboard.mostrarDashboardCorreto(sessao, navegacao);
@@ -113,13 +109,13 @@ public class LoginView extends VBox {
 
         labelStatus.setText("Cadastrando...");
 
-        ClienteTask.executar(
+    ClienteTask.<DTOResponse<?>>executar(
                 () -> {
                     try (VaiJuntoClient client = new VaiJuntoClient()) {
-                        return client.cadastrarUsuario(login, senha, tipo);
+                        return client.cadastro(login, senha, tipo);
                     }
                 },
-                (DTOResponse<?> resposta) -> {
+                resposta -> {
                     Alert alerta = new Alert(resposta.isSucesso() ? AlertType.INFORMATION : AlertType.ERROR);
                     alerta.setHeaderText(null);
                     alerta.setContentText(resposta.getMensagem());
