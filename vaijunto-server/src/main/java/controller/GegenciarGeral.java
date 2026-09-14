@@ -41,6 +41,10 @@ public class GegenciarGeral {
         return userService.mudaTipoUser(token, tipoUser);
     }
 
+    public Usuario validarSessao(String token) {
+        return userService.validarSessao(token);
+    }
+
     // ==========================================
     // FLUXOS DE MOTORISTA (Encaminha para o CaronaService)
     // ==========================================

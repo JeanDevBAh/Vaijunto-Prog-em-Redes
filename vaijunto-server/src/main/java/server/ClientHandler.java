@@ -186,7 +186,11 @@ public class ClientHandler implements Runnable {
         if (token == null) {
             return new DTOResponse<>(false, "Login ou senha inválidos.");
         }
-        return new DTOResponse<>(true, "Login efetuado com sucesso.", token);
+        model.Usuario usuario = gegenciador.validarSessao(token);
+        Map<String, Object> dados = new java.util.HashMap<>();
+        dados.put("token", token);
+        dados.put("tipoUser", usuario.getTipoUser().name());
+        return new DTOResponse<>(true, "Login efetuado com sucesso.", dados);
     }
 
     private DTOResponse<?> tratarBuscarViagens(DTORequest request){
