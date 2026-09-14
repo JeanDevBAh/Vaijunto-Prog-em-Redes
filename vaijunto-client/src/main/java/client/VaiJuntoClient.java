@@ -15,8 +15,10 @@ import network.DTOResponse;
 import network.JsonUtil;
 
 public final class VaiJuntoClient implements Closeable {
-    public static final String DEFAULT_HOST = "127.0.0.1";
-    public static final int DEFAULT_PORT = 8080;
+    private static final String SERVER_HOST_ENV = "VAIJUNTO_SERVER_HOST";
+    private static final String SERVER_PORT_ENV = "VAIJUNTO_SERVER_PORT";
+    public static final String DEFAULT_HOST = obterHostPadrao();
+    public static final int DEFAULT_PORT = obterPortaPadrao();
     private static final int DEFAULT_TIMEOUT = 10_000;
 
     private final Socket socket;
@@ -45,6 +47,25 @@ public final class VaiJuntoClient implements Closeable {
         socket.setSoTimeout(timeoutMillis);
         reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         writer = new PrintWriter(socket.getOutputStream(), true);
+    }
+
+    private static String obterHostPadrao() {
+        String host = System.getenv(SERVER_HOST_ENV);
+        return host == null || host.isBlank() ? "127.0.0.1" : host;
+    }
+
+    private static int obterPortaPadrao() {
+        String porta = System.getenv(SERVER_PORT_ENV);
+        if (porta == null || porta.isBlank()) {
+            return 8080;
+        }
+        try {
+            return Integer.parseInt(porta);
+        } catch (NumberFormatException exception) {
+            throw new IllegalStateException(
+                    "A variável " + SERVER_PORT_ENV + " deve conter uma porta numérica.",
+                    exception);
+        }
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
