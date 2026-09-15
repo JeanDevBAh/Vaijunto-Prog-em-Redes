@@ -12,6 +12,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextArea;
@@ -50,6 +51,8 @@ public class MotoristaView extends VBox {
         setSpacing(12);
         setPadding(new Insets(24));
         status.setEditable(false);
+        VBox conteudo = new VBox(12);
+        conteudo.setFillWidth(true);
 
         Label titulo = new Label("Dashboard do Motorista - " + sessao.getLogin());
         titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
@@ -80,7 +83,8 @@ public class MotoristaView extends VBox {
         publicar.setOnAction(e -> oferecerCarona());
         listar.setOnAction(e -> listarCaronas());
         caronas.setPlaceholder(new Label("Nenhuma carona carregada."));
-        caronas.setPrefHeight(170);
+        caronas.setPrefHeight(300);
+        caronas.setMinHeight(220);
         detalhes.setEditable(false);
         detalhes.setWrapText(true);
         detalhes.setPrefRowCount(3);
@@ -100,9 +104,17 @@ public class MotoristaView extends VBox {
         Button sair = new Button("Sair");
         sair.setOnAction(e -> sair());
 
-        getChildren().addAll(titulo, formulario, new Label("Rota e preço de cada trecho:"),
+        conteudo.getChildren().addAll(titulo, formulario, new Label("Rota e preço de cada trecho:"),
                 rotaEditor, controlesRota, publicar, listar, caronas, detalhes,
                 operacoes, trocar, sair, status);
+
+        ScrollPane rolagem = new ScrollPane(conteudo);
+        rolagem.setFitToWidth(true);
+        rolagem.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        rolagem.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        rolagem.setPannable(true);
+        VBox.setVgrow(rolagem, javafx.scene.layout.Priority.ALWAYS);
+        getChildren().add(rolagem);
     }
 
     private void oferecerCarona() {

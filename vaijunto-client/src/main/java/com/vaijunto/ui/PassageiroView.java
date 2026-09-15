@@ -1,16 +1,21 @@
 package com.vaijunto.ui;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Locale;
+import java.text.NumberFormat;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import model.Cidades;
 import model.TipoUser;
@@ -25,7 +30,7 @@ public class PassageiroView extends VBox {
     private final ComboBox<Cidades> campoOrigem = new ComboBox<>();
     private final ComboBox<Cidades> campoDestino = new ComboBox<>();
     private final DatePicker campoData = new DatePicker();
-    private final ListView<Object> resultados = new ListView<>();
+    private final ListView<String> resultados = new ListView<>();
     private final TextField campoReserva = new TextField();
     private final Label labelStatus = new Label();
     private final Button btnBuscar = new Button("Buscar viagens");
@@ -68,6 +73,18 @@ public class PassageiroView extends VBox {
         btnReservar.setOnAction(e -> reservarSelecionada());
         resultados.setPlaceholder(new Label("Nenhuma viagem pesquisada."));
         resultados.setPrefHeight(180);
+        resultados.setCellFactory(lista -> {
+            return new ListCell<>() {
+                @Override
+                protected void updateItem(String item, boolean vazio) {
+                    super.updateItem(item, vazio);
+                    setText(vazio ? null : item);
+                    setGraphic(null);
+                    setWrapText(!vazio);
+                    setPrefHeight(vazio ? 0 : Region.USE_COMPUTED_SIZE);
+                }
+            };
+        });
         resultados.getSelectionModel().selectedItemProperty()
                 .addListener((obs, antigo, novo) -> btnReservar.setDisable(novo == null));
 
@@ -101,6 +118,8 @@ public class PassageiroView extends VBox {
 
         setOperacaoEmAndamento(true);
         labelStatus.setText("Buscando viagens...");
+        resultados.getItems().clear();
+        btnReservar.setDisable(true);
         ClienteTask.<DTOResponse<?>>executar(
                 () -> sessao.getClient().buscarViagens(
                         campoOrigem.getValue().name(),
@@ -112,10 +131,11 @@ public class PassageiroView extends VBox {
                         labelStatus.setText(resposta.getMensagem());
                         return;
                     }
-                    resultados.getItems().clear();
                     Object dados = resposta.getDados();
                     if (dados instanceof List<?> lista) {
-                        resultados.getItems().addAll(lista);
+                        for (Object itinerario : lista) {
+                            resultados.getItems().add(formatarItinerario(itinerario));
+                        }
                     }
                     labelStatus.setText(resultados.getItems().isEmpty()
                             ? "Nenhuma viagem encontrada."
@@ -216,5 +236,72 @@ public class PassageiroView extends VBox {
 
     private static String mensagemErro(Throwable erro) {
         return erro.getMessage() == null ? erro.getClass().getSimpleName() : erro.getMessage();
+    }
+
+    private static String formatarItinerario(Object valor) {
+        if (!(valor instanceof Map<?, ?> itinerario)) {
+            return String.valueOf(valor);
+        }
+
+        StringBuilder texto = new StringBuilder();
+        Object trechos = itinerario.get("trechos");
+        if (trechos instanceof List<?> lista && !lista.isEmpty()) {
+            texto.append("Rota: ");
+            for (int i = 0; i < lista.size(); i++) {
+                if (i > 0) {
+                    texto.append(" -> ");
+                }
+                if (lista.get(i) instanceof Map<?, ?> trecho) {
+                    texto.append(nomeCidade(trecho.get("cidadeOrigem")));
+                    if (i == lista.size() - 1) {
+                        texto.append(" -> ").append(nomeCidade(trecho.get("cidadeDestino")));
+                    }
+                }
+            }
+            texto.append('\n');
+
+            Map<?, ?> primeiroTrecho = (Map<?, ?>) lista.get(0);
+            texto.append("Data: ").append(texto(primeiroTrecho.get("data")))
+                    .append(" | Motorista: ").append(texto(primeiroTrecho.get("motorista"))).append('\n');
+            texto.append("Trechos: ");
+            for (int i = 0; i < lista.size(); i++) {
+                if (i > 0) {
+                    texto.append(" | ");
+                }
+                if (lista.get(i) instanceof Map<?, ?> trecho) {
+                    texto.append(nomeCidade(trecho.get("cidadeOrigem")))
+                            .append(" - ").append(nomeCidade(trecho.get("cidadeDestino")))
+                            .append(" (").append(formatarPreco(trecho.get("preco"))).append(')');
+                }
+            }
+        } else {
+            texto.append("Itinerário sem trechos detalhados");
+        }
+        texto.append('\n').append("Total: ")
+                .append(formatarPreco(itinerario.get("precoTotal")));
+        return texto.toString();
+    }
+
+    private static String nomeCidade(Object valor) {
+        if (valor == null) {
+            return "-";
+        }
+        try {
+            return Cidades.fromString(String.valueOf(valor)).getNome();
+        } catch (IllegalArgumentException erro) {
+            return String.valueOf(valor);
+        }
+    }
+
+    private static String formatarPreco(Object valor) {
+        if (!(valor instanceof Number numero)) {
+            return "R$ -";
+        }
+        NumberFormat formato = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR"));
+        return formato.format(numero.doubleValue());
+    }
+
+    private static String texto(Object valor) {
+        return valor == null ? "-" : String.valueOf(valor);
     }
 }
