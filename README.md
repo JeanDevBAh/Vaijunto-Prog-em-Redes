@@ -115,6 +115,7 @@ JSON inválido recebe `{"sucesso":false,"mensagem":"JSON inválido: ..."}`. Requ
 | `BUSCAR_VIAGENS` | `origem`, `destino`, `data` | lista de objetos `Itinerario` |
 | `RESERVAR` | `token`, `indiceItinerario` | string `idReserva` |
 | `CANCELAR_RESERVA` | `token`, `idReserva` | ausente |
+| `MINHAS_RESERVAS` | `token` | lista de objetos `Reserva` do passageiro autenticado |
 
 Regras específicas:
 
@@ -247,6 +248,18 @@ Servidor -> cliente:
 
 ```json
 {"sucesso":true,"mensagem":"Reserva cancelada com sucesso."}
+```
+
+Cliente -> servidor:
+
+```json
+{"acao":"MINHAS_RESERVAS","token":"550e8400-e29b-41d4-a716-446655440000"}
+```
+
+Servidor -> cliente:
+
+```json
+{"sucesso":true,"mensagem":"Reservas encontradas","dados":[{"id":"b9c1a2d3-e4f5-4678-9012-abcdefabcdef","passageiroId":"...","loginPassageiro":"ana","trechos":[],"precoTotal":55.0,"ativa":true}]}
 ```
 
 Cliente -> servidor:
