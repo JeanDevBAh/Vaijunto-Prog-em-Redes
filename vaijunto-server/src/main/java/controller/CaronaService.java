@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import model.Carona;
@@ -23,8 +24,17 @@ public class CaronaService {
         this.grafo = mapa;
     }
     
-    public String criarCarona(List<Cidades> rota, String data, String hora, 
+    public synchronized String criarCarona(List<Cidades> rota, String data, String hora,
                   int vagasTotais, boolean ativaOuNao, List<Double> precos, String motorista){
+        for (Carona existente : caronas.values()) {
+            if (Objects.equals(motorista, existente.getNomeMotorista())
+                    && Objects.equals(data, existente.getData())
+                    && Objects.equals(hora, existente.getHora())
+                    && Objects.equals(rota, existente.getRota())) {
+                throw new IllegalArgumentException(
+                        "Você já publicou uma carona com a mesma rota, data e horário.");
+            }
+        }
         Carona carona = new Carona(rota, data, hora, vagasTotais, ativaOuNao, precos, motorista);
         caronas.put(carona.getId(), carona);
         if (carona.isAtivaOuNao()) {
