@@ -31,6 +31,7 @@ public class PassageiroView extends VBox {
     private final ComboBox<Cidades> campoDestino = new ComboBox<>();
     private final DatePicker campoData = new DatePicker();
     private final ListView<String> resultados = new ListView<>();
+    private final ListView<String> reservas = new ListView<>();
     private final TextField campoReserva = new TextField();
     private final Label labelStatus = new Label();
     private final Button btnBuscar = new Button("Buscar viagens");
@@ -93,6 +94,10 @@ public class PassageiroView extends VBox {
         Button btnCancelar = new Button("Cancelar reserva");
         btnCancelar.setOnAction(e -> cancelarReserva());
         reserva.getChildren().addAll(campoReserva, btnCancelar);
+        Button btnMinhasReservas = new Button("Consultar minhas reservas");
+        btnMinhasReservas.setOnAction(e -> consultarReservas());
+        reservas.setPlaceholder(new Label("Nenhuma reserva encontrada."));
+        reservas.setPrefHeight(160);
 
         Button btnVirarMotorista = new Button("Mudar para Motorista");
         btnVirarMotorista.setOnAction(e -> mudarTipo());
@@ -101,8 +106,9 @@ public class PassageiroView extends VBox {
 
         getChildren().addAll(
                 titulo, busca, btnBuscar, resultados, btnReservar,
-                reserva, btnVirarMotorista, btnSair, labelStatus
+                reserva, btnMinhasReservas, reservas, btnVirarMotorista, btnSair, labelStatus
         );
+        consultarReservas();
     }
 
     private void buscarViagens() {
@@ -163,12 +169,35 @@ public class PassageiroView extends VBox {
                     labelStatus.setText(resposta.getMensagem());
                     if (resposta.isSucesso() && resposta.getDados() != null) {
                         campoReserva.setText(String.valueOf(resposta.getDados()));
+                        consultarReservas();
                     }
                 },
                 erro -> {
                     setOperacaoEmAndamento(false);
                     labelStatus.setText("Erro de conexão: " + mensagemErro(erro));
                 });
+    }
+
+    private void consultarReservas() {
+        ClienteTask.<DTOResponse<?>>executar(
+                () -> sessao.getClient().minhasReservas(sessao.getToken()),
+                resposta -> {
+                    if (!resposta.isSucesso()) {
+                        labelStatus.setText(resposta.getMensagem());
+                        return;
+                    }
+                    reservas.getItems().clear();
+                    Object dados = resposta.getDados();
+                    if (dados instanceof List<?> lista) {
+                        for (Object reserva : lista) {
+                            reservas.getItems().add(formatarReserva(reserva));
+                        }
+                    }
+                    labelStatus.setText(reservas.getItems().isEmpty()
+                            ? "Você ainda não possui reservas."
+                            : "Reservas atualizadas.");
+                },
+                erro -> labelStatus.setText("Erro de conexão: " + mensagemErro(erro)));
     }
 
     private void cancelarReserva() {
@@ -186,6 +215,7 @@ public class PassageiroView extends VBox {
                     labelStatus.setText(resposta.getMensagem());
                     if (resposta.isSucesso()) {
                         campoReserva.clear();
+                        consultarReservas();
                     }
                 },
                 erro -> {
@@ -279,6 +309,35 @@ public class PassageiroView extends VBox {
         }
         texto.append('\n').append("Total: ")
                 .append(formatarPreco(itinerario.get("precoTotal")));
+        return texto.toString();
+    }
+
+    private static String formatarReserva(Object valor) {
+        if (!(valor instanceof Map<?, ?> reserva)) {
+            return String.valueOf(valor);
+        }
+        StringBuilder texto = new StringBuilder("ID: ")
+                .append(texto(reserva.get("id")))
+                .append(" | Status: ")
+                .append(Boolean.TRUE.equals(reserva.get("ativa")) ? "ATIVA" : "CANCELADA")
+                .append('\n');
+        texto.append("Passageiro: ").append(texto(reserva.get("loginPassageiro")))
+                .append(" | Total: ").append(formatarPreco(reserva.get("precoTotal")));
+        Object trechos = reserva.get("trechos");
+        if (trechos instanceof List<?> lista && !lista.isEmpty()) {
+            texto.append('\n').append("Rota: ");
+            for (int i = 0; i < lista.size(); i++) {
+                if (i > 0) {
+                    texto.append(" -> ");
+                }
+                if (lista.get(i) instanceof Map<?, ?> trecho) {
+                    texto.append(nomeCidade(trecho.get("cidadeOrigem")));
+                    if (i == lista.size() - 1) {
+                        texto.append(" -> ").append(nomeCidade(trecho.get("cidadeDestino")));
+                    }
+                }
+            }
+        }
         return texto.toString();
     }
 

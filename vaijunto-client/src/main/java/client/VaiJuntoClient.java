@@ -185,6 +185,11 @@ public final class VaiJuntoClient implements Closeable {
         request.setToken(Objects.requireNonNull(token));
         return enviar(request);
     }
+    public DTOResponse<?> minhasReservas(String token) throws IOException {
+        DTORequest request = new DTORequest("MINHAS_RESERVAS");
+        request.setToken(Objects.requireNonNull(token));
+        return enviar(request);
+    }
     
     @Override
     public void close() throws IOException {
