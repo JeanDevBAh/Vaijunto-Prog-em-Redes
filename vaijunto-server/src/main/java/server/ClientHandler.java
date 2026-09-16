@@ -105,6 +105,8 @@ public class ClientHandler implements Runnable {
                 return tratarReservar(request);
             case "CANCELAR_RESERVA":
                 return tratarCancelarReserva(request);
+            case "MINHAS_RESERVAS":
+                return tratarMinhasReservas(request);
             default:
                 return new DTOResponse<>(false, "Ação desconhecida: " + request.getAcao());
         }
@@ -273,6 +275,18 @@ public class ClientHandler implements Runnable {
         boolean sucesso = gegenciador.cancelarReserva(request.getToken(), request.getIdReserva());
         return new DTOResponse<>(sucesso, sucesso ? "Reserva cancelada com sucesso."
                 : "Não foi possível cancelar (reserva inexistente, já cancelada, de outro usuário ou sessão inválida).");
+    }
+
+    private DTOResponse<?> tratarMinhasReservas(DTORequest request) {
+        if (isBlank(request.getToken())) {
+            return new DTOResponse<>(false, "Token é obrigatório.");
+        }
+        try {
+            return new DTOResponse<>(true, "Reservas encontradas",
+                    gegenciador.listarReservas(request.getToken()));
+        } catch (SecurityException e) {
+            return new DTOResponse<>(false, "Usuário não autenticado.");
+        }
     }
 
     private DTOResponse<?> tratarReservar(DTORequest request) {

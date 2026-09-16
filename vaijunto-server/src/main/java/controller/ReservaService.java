@@ -58,4 +58,10 @@ public class ReservaService {
         }
         return false;
     }
+
+    public List<Reserva> listarReservasPorPassageiro(String login) {
+        return reservas.values().stream()
+                .filter(reserva -> reserva.getLoginPassageiro().equals(login))
+                .toList();
+    }
 }

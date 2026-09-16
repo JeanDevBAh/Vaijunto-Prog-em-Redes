@@ -7,6 +7,7 @@ import model.Carona;
 import model.Cidades;
 import model.Grafo;
 import model.Itinerario;
+import model.Reserva;
 import model.TipoUser;
 import model.Usuario;
 
@@ -104,6 +105,14 @@ public class GegenciarGeral {
             return false;
         }
         return reservaService.cancelarReserva(idReserva, passageiro.getLogin());
+    }
+
+    public List<Reserva> listarReservas(String token) {
+        Usuario passageiro = userService.validarSessao(token);
+        if (passageiro == null) {
+            throw new SecurityException("Usuário não autenticado.");
+        }
+        return reservaService.listarReservasPorPassageiro(passageiro.getLogin());
     }
 
    

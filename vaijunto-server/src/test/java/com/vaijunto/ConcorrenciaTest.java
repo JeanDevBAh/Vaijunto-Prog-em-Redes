@@ -45,7 +45,7 @@ public class ConcorrenciaTest {
 
     @Test
     public void deveCadastrarUsuariosDiferentesSimultaneamente() throws Exception {
-        int quantidade = 20;
+        int quantidade = 100;
         ExecutorService executor = Executors.newFixedThreadPool(quantidade);
         CountDownLatch inicio = new CountDownLatch(1);
         List<Future<DTOResponse<?>>> tarefas = new ArrayList<>();
