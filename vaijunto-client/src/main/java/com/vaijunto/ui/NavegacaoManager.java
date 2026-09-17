@@ -5,9 +5,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * Único ponto do app que sabe manipular a Stage/Scene principal. Cada tela
- * chama navegacao.mostrar(novaTela) em vez de mexer em Stage diretamente --
- * assim nenhuma tela precisa saber como a janela principal está montada.
+ * Centraliza a navegação entre as telas da aplicação JavaFX.
+ *
+ * É responsável por controlar a Stage principal e substituir a raiz da Scene
+ * quando uma nova tela precisa ser apresentada.
+ *
+ * Dessa forma, as telas não precisam manipular diretamente a janela principal.
  */
 public class NavegacaoManager {
     private final Stage stage;

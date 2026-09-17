@@ -1,8 +1,12 @@
 package model;
 
 /**
- * Enum das cidades disponiveis que serão vertices do grafo a ser criado
- * O tahiti é proibido de ser acessado 
+ * Enumeração de cidades utilizada pelos componentes visuais do cliente.
+ *
+ * Mantém os mesmos valores reconhecidos pelo servidor para que as opções
+ * selecionadas na interface possam ser convertidas corretamente em JSON.
+ *
+ * Somente cidades disponíveis são apresentadas ao usuário.
  */
 public enum Cidades {//cidades baseadas no jogo RDR2
     VALENTINE("Valentine", true),

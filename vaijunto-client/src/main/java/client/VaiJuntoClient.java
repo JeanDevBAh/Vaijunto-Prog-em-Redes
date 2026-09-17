@@ -14,6 +14,18 @@ import network.DTORequest;
 import network.DTOResponse;
 import network.JsonUtil;
 
+/**
+ * Cliente TCP utilizado pela aplicação JavaFX para acessar o servidor.
+ *
+ * Encapsula a criação do socket, os streams de entrada e saída e o envio de
+ * requisições JSON.
+ *
+ * Disponibiliza métodos de alto nível para todas as operações do protocolo,
+ * como login, cadastro, oferta de carona, busca de viagens e reservas.
+ *
+ * A conexão possui timeout de leitura e é mantida aberta durante a sessão do
+ * usuário, pois o servidor associa o resultado da última busca à conexão.
+ */
 public final class VaiJuntoClient implements Closeable {
     private static final String SERVER_HOST_ENV = "VAIJUNTO_SERVER_HOST";
     private static final String SERVER_PORT_ENV = "VAIJUNTO_SERVER_PORT";

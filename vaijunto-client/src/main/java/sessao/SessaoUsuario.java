@@ -3,19 +3,23 @@ package sessao;
 import client.VaiJuntoClient;
 import model.TipoUser;
 import java.io.IOException;
-
 /**
- * Estado da sessão do usuário logado. Guarda também a instância do
- * VaijuntoClient em uso -- a MESMA conexão TCP precisa ser reaproveitada
- * durante toda a sessão, porque o servidor mantém estado por conexão
- * (ex.: o resultado da última BUSCAR_VIAGENS, usado depois em RESERVAR).
- * Abrir uma conexão nova a cada tela perderia esse estado.
+ * Mantém o estado do usuário autenticado no cliente.
+ *
+ * Armazena token, login, tipo de usuário e a instância do VaiJuntoClient
+ * associada à conexão TCP atual.
+ *
+ * A mesma conexão é mantida durante toda a sessão porque o servidor guarda
+ * informações dependentes da conexão, como a última busca de itinerários.
+ *
+ * Também permite atualizar o tipo de usuário depois que o servidor confirma
+ * a operação MUDAR_TIPO_USUARIO.
  */
 public class SessaoUsuario {
     private final String token;
     private final String login;
     private final VaiJuntoClient client;
-    private TipoUser tipoUser; // não é final: pode mudar via MUDAR_TIPO_USUARIO
+    private TipoUser tipoUser; 
 
     public SessaoUsuario(String token, String login, TipoUser tipoUser, VaiJuntoClient client) {
         this.token = token;

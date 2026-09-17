@@ -23,6 +23,18 @@ import network.DTOResponse;
 import sessao.SessaoUsuario;
 import util.ClienteTask;
 
+/**
+ * Dashboard destinado ao usuário passageiro.
+ *
+ * Permite selecionar origem, destino e data para pesquisar itinerários
+ * disponíveis no servidor.
+ *
+ * O passageiro pode selecionar um itinerário, realizar a reserva, consultar
+ * suas reservas e cancelar uma reserva existente.
+ *
+ * As operações de rede são executadas de forma assíncrona e os resultados são
+ * refletidos nas listas visuais da interface.
+ */
 public class PassageiroView extends VBox {
 
     private final SessaoUsuario sessao;

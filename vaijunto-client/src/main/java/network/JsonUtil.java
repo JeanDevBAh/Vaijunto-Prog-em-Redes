@@ -2,7 +2,13 @@ package network;
 
 import com.google.gson.Gson;
 import java.lang.reflect.Type;
-
+/**
+ * Utilitário responsável pela serialização e desserialização de mensagens JSON
+ * no cliente.
+ *
+ * Converte DTORequest em texto antes do envio e transforma as respostas JSON
+ * recebidas em DTOResponse.
+ */
 public class JsonUtil {
     private static final Gson gson = new Gson();
 

@@ -25,6 +25,21 @@ import network.DTOResponse;
 import sessao.SessaoUsuario;
 import util.ClienteTask;
 
+
+/**
+ * Dashboard destinado ao usuário motorista.
+ *
+ * Permite montar uma rota com várias cidades, informar data, horário, vagas
+ * e preço de cada trecho, e publicar uma nova carona.
+ *
+ * Também permite listar as caronas do motorista, visualizar seus dados,
+ * consultar passageiros por trecho, cancelar caronas, alterar o tipo de
+ * usuário e encerrar a sessão.
+ *
+ * A tela realiza validações básicas antes de enviar os dados ao servidor,
+ * como verificar cidades repetidas, preços inválidos, horários inválidos e
+ * quantidade correta de trechos.
+ */
 public class MotoristaView extends VBox {
     private final SessaoUsuario sessao;
     private final NavegacaoManager navegacao;

@@ -6,15 +6,15 @@ import java.util.function.Consumer;
 import javafx.concurrent.Task;
 
 /**
- * Roda uma chamada bloqueante (qualquer método de VaijuntoClient, que usa
- * Socket/BufferedReader.readLine() por baixo) numa thread separada da
- * JavaFX Application Thread. Sem isso, cada chamada de rede congelaria a
- * interface inteira até a resposta do servidor chegar.
+ * Executa operações de rede em uma thread separada da thread principal do
+ * JavaFX.
  *
- * setOnSucceeded/setOnFailed do Task já são executados de volta na
- * Application Thread automaticamente -- por isso é seguro mexer em
- * componentes de UI (Label, Alert, trocar de tela) dentro de aoTerminar/
- * aoFalhar, sem precisar de Platform.runLater manual.
+ * Como as operações de socket podem bloquear enquanto aguardam uma resposta,
+ * essa classe evita que a interface fique congelada durante login, busca,
+ * cadastro, reserva ou qualquer outra chamada ao servidor.
+ *
+ * Os callbacks de sucesso e falha são executados pela infraestrutura de
+ * eventos do JavaFX, permitindo atualizar os componentes visuais com segurança.
  */
 public final class ClienteTask {
 

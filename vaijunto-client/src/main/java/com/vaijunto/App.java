@@ -4,7 +4,14 @@ import com.vaijunto.ui.LoginView;
 import com.vaijunto.ui.NavegacaoManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
-
+/**
+ * Classe principal da aplicação JavaFX.
+ *
+ * Inicializa a interface gráfica, configura o título da janela e cria o
+ * NavegacaoManager responsável por controlar as telas da aplicação.
+ *
+ * A tela inicial apresentada é a tela de login.
+ */
 public class App extends Application {
     @Override
     public void start(Stage stage) {

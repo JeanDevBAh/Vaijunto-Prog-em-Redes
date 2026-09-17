@@ -3,7 +3,13 @@ package network;
 import java.util.List;
 
 import model.TipoUser;
-
+/**
+ * Representa uma requisição do cliente no protocolo JSON.
+ *
+ * É utilizada pela aplicação JavaFX para montar as mensagens enviadas ao
+ * servidor. Seus campos representam as operações gerais, de motorista e de
+ * passageiro.
+ */
 public class DTORequest {
     private String acao;
     private String data;

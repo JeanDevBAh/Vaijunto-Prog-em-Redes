@@ -1,5 +1,13 @@
 package network;
-
+/**
+ * Representa uma resposta recebida do servidor.
+ *
+ * Contém o status da operação, uma mensagem para o usuário e os dados
+ * retornados pelo servidor.
+ *
+ * A aplicação utiliza esse objeto para decidir se deve atualizar a interface
+ * ou exibir uma mensagem de erro.
+ */
 public class DTOResponse<T> {
     
     private boolean sucesso;

@@ -17,6 +17,16 @@ import sessao.SessaoUsuario;
 import util.ClienteTask;
 import java.util.Map;
 
+/**
+ * Tela inicial de autenticação e cadastro do usuário.
+ *
+ * Permite informar login e senha para realizar login ou preencher também o
+ * tipo de usuário para efetuar um cadastro.
+ *
+ * As chamadas ao servidor são executadas de forma assíncrona por meio de
+ * ClienteTask. Em caso de login bem-sucedido, cria uma SessaoUsuario e
+ * direciona o usuário ao dashboard correspondente.
+ */
 public class LoginView extends VBox {
 
     private final NavegacaoManager navegacao;

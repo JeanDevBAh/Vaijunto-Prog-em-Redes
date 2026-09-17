@@ -4,12 +4,13 @@ import model.TipoUser;
 import sessao.SessaoUsuario;
 
 /**
- * Decide qual dashboard mostrar conforme o TipoUser da sessão. Existe como
- * classe separada porque essa decisão é disparada em DOIS pontos diferentes
- * do fluxo -- logo após o login/cadastro, e logo após o servidor confirmar
- * uma troca de tipo (MUDAR_TIPO_USUARIO) -- e não queremos duas cópias da
- * mesma regra "MOTORISTA -> tal tela, PASSAGEIRO -> tal outra" podendo
- * divergir com o tempo.
+ * Decide qual dashboard deve ser exibido de acordo com o tipo do usuário.
+ *
+ * Usuários do tipo MOTORISTA são direcionados para MotoristaView.
+ * Usuários do tipo PASSAGEIRO são direcionados para PassageiroView.
+ *
+ * A regra foi centralizada nessa classe para evitar duplicação da lógica de
+ * navegação após o login ou após a troca de tipo de usuário.
  */
 public final class RoteadorDashboard {
 
