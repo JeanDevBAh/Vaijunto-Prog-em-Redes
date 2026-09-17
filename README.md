@@ -274,32 +274,6 @@ Servidor -> cliente:
 {"sucesso":false,"mensagem":"Ação desconhecida: OPERACAO_INEXISTENTE"}
 ```
 
-## Testes
-
-O módulo do servidor inclui testes de concorrência para múltiplos cadastros, exclusão de login duplicado, limite de vagas e prevenção de venda duplicada do mesmo assento:
-
-```bash
-cd vaijunto-server
-mvn test
-```
-
-## Docker
-
-```bash
-cd vaijunto-server
-docker build -t vaijunto-server .
-docker run --rm -p 8080:8080 vaijunto-server
-```
-
-```bash
-cd vaijunto-client
-docker build -t vaijunto-client .
-docker run --rm -e DISPLAY=:0 --network host vaijunto-client
-```
-
-Vou confrontar cada item do barema com a implementação real, distinguindo o que está implementado do que ainda não aparece no código, especialmente testes, timeouts e Docker.
-
-
 # Topicos do barema:
 
 ## 1. Arquitetura detalhada
