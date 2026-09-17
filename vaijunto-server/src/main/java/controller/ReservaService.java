@@ -11,7 +11,18 @@ import model.Itinerario;
 import model.Reserva;
 import model.Trecho;
 import model.Usuario;
-
+/**
+ * Responsável pela busca de itinerários e pelo gerenciamento das reservas.
+ *
+ * Consulta o Grafo para localizar caminhos entre cidades e cria reservas
+ * associadas aos trechos escolhidos pelo passageiro.
+ *
+ * A confirmação da reserva é protegida por sincronização e ocorre em duas
+ * etapas: primeiro todos os trechos são validados e, somente se houver vaga
+ * em todos eles, as alterações são efetivadas.
+ *
+ * Também realiza cancelamento e listagem das reservas de um passageiro.
+ */
 public class ReservaService {
     private final Grafo grafo;
     private final Map<String, Reserva> reservas;

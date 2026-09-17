@@ -2,7 +2,17 @@ package model;
 
 import java.util.Objects;
 import java.util.UUID;
-
+/**
+ * Representa um usuário cadastrado no VaiJunto.
+ *
+ * Armazena login, senha, identificador, nome e tipo de usuário.
+ *
+ * A senha é marcada como transient para evitar que seja serializada nas
+ * respostas enviadas pela rede.
+ *
+ * A igualdade entre usuários é baseada no login, que funciona como
+ * identificador único dentro do sistema.
+ */
 public class Usuario {
 
     private String login;

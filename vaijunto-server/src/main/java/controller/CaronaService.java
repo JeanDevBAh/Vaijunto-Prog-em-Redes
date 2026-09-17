@@ -14,7 +14,18 @@ import model.Trecho;
 import model.Usuario;
  
 
-
+/**
+ * Gerencia o ciclo de vida das caronas oferecidas pelos motoristas.
+ *
+ * Cria caronas, verifica duplicidade de rota, data e horário, registra as
+ * caronas em memória e adiciona seus trechos ao grafo de viagens.
+ *
+ * Também permite listar caronas de um motorista, consultar passageiros por
+ * trecho e cancelar caronas.
+ *
+ * Ao cancelar uma carona, seus trechos são removidos do grafo para que não
+ * sejam mais encontrados em novas buscas.
+ */
 public class CaronaService {
     private final Map<String, Carona>  caronas;
     private final Grafo grafo;

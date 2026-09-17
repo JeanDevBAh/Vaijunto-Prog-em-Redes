@@ -22,6 +22,21 @@ import network.DTORequest;
 import network.DTOResponse;
 import network.JsonUtil;
 
+
+/**
+ * Processa a comunicação entre um cliente e o servidor.
+ *
+ * Cada instância controla uma conexão TCP específica, lendo requisições JSON
+ * linha a linha e enviando uma resposta para cada requisição recebida.
+ *
+ * A classe também interpreta o campo "acao" do DTORequest e encaminha cada
+ * operação para o serviço correspondente, realizando validações de entrada,
+ * autenticação por token e tratamento de erros.
+ *
+ * A variável ultimabusca mantém os itinerários retornados pela última busca
+ * realizada naquela conexão, permitindo que o cliente reserve um itinerário
+ * utilizando seu índice.
+ */
 public class ClientHandler implements Runnable {
     
     private Socket socketCliente;

@@ -3,7 +3,16 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * Representa uma parte individual de uma carona entre duas cidades.
+ *
+ * Cada trecho controla sua origem, destino, data, preço, motorista, número
+ * total de lugares, vagas disponíveis e passageiros confirmados.
+ *
+ * Os métodos de reserva e liberação de lugares são sincronizados para evitar
+ * que duas operações concorrentes alterem a quantidade de vagas de forma
+ * inconsistente.
+ */
 public class Trecho {
     private String caronaId;
     private String data;

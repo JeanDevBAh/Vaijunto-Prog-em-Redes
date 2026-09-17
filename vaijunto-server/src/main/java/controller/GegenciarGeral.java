@@ -10,7 +10,18 @@ import model.Itinerario;
 import model.Reserva;
 import model.TipoUser;
 import model.Usuario;
-
+/**
+ * Fachada central dos serviços de negócio do servidor.
+ *
+ * Reúne e coordena UserService, CaronaService e ReservaService, oferecendo
+ * uma interface única para o ClientHandler.
+ *
+ * Também realiza a validação inicial das sessões antes de permitir operações
+ * protegidas, como oferecer caronas, cancelar caronas ou criar reservas.
+ *
+ * Essa classe reduz o acoplamento entre a camada de comunicação e os serviços
+ * específicos da aplicação.
+ */
 public class GegenciarGeral {
     private final CaronaService caronaService;
     private final ReservaService reservaService;

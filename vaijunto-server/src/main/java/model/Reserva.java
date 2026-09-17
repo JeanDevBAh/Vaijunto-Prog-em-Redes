@@ -4,7 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
+/**
+ * Representa uma reserva realizada por um passageiro.
+ *
+ * Armazena identificador da reserva, passageiro, login, trechos reservados,
+ * preço total e estado de atividade.
+ *
+ * Ao ser cancelada, libera os lugares ocupados em todos os seus trechos.
+ * A operação é protegida para evitar cancelamentos repetidos ou inconsistentes.
+ */
 public class Reserva {
     private final String id;
     private final String passageiroId;

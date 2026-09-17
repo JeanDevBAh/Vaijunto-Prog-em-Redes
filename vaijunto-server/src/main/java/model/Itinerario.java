@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 /**
- * Itinerario tem os trechos das viagens que ficam disponiveis pela busca
+ * Representa um caminho completo entre a origem e o destino do passageiro.
+ *
+ * Um itinerário é formado por um ou mais trechos, que podem pertencer a
+ * caronas de motoristas diferentes.
+ *
+ * A classe calcula o preço total somando o preço de todos os trechos e oferece
+ * informações como origem, destino, data e quantidade de conexões.
  */
 public class Itinerario {
     private final List<Trecho> trechos;

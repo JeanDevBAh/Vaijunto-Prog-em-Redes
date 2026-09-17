@@ -5,7 +5,17 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import model.TipoUser;
 import model.Usuario;
-
+/**
+ * Gerencia usuários cadastrados e sessões ativas.
+ *
+ * Mantém um mapa de usuários identificados pelo login e outro mapa que associa
+ * tokens de autenticação aos usuários atualmente conectados.
+ *
+ * É responsável por cadastrar usuários, validar login e senha, criar tokens,
+ * verificar sessões, realizar logout e alterar o tipo de usuário.
+ *
+ * Utiliza ConcurrentHashMap para permitir acesso seguro por múltiplas threads.
+ */
 public class UserService {
     
     private final Map<String, Usuario> usuarios;

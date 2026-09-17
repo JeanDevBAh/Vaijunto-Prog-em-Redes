@@ -3,7 +3,16 @@ package network;
 import java.util.List;
 
 import model.TipoUser;
-
+/**
+ * Objeto de transferência utilizado nas requisições enviadas pelo cliente.
+ *
+ * Reúne todos os campos possíveis do protocolo remoto, como ação, login,
+ * senha, token, data, horário, rota, preços, quantidade de vagas e índices
+ * de itinerários.
+ *
+ * O Gson utiliza essa classe para converter mensagens JSON recebidas pelo
+ * socket em objetos Java.
+ */
 public class DTORequest {
     private String acao;
     private String data;
@@ -18,9 +27,9 @@ public class DTORequest {
     private String origem;
     private String destino;
     private Integer vagas;
-    private String idReserva; // Útil para cancelamentos
+    private String idReserva; 
     private TipoUser tipoUser;
-    private Integer indiceItinerario; // substitui o antigo campo "itinerario" (JsonElement)
+    private Integer indiceItinerario;
     
 
     // Construtor vazio (necessário para o Gson desserializar direito)
