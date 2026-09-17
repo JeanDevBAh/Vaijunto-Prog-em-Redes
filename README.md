@@ -15,6 +15,65 @@ O repositório possui dois módulos:
 
 Requisitos: Java 21, Maven, JavaFX, Gson e, opcionalmente, Docker.
 
+## Estrutura do projeto e pacotes
+
+```text
+.
+├── vaijunto-server/
+│   ├── pom.xml
+│   ├── Dockerfile
+│   ├── src/main/java/
+│   │   ├── controller/  # serviços de usuários, caronas e reservas
+│   │   ├── model/       # entidades, cidades, grafo e trechos
+│   │   ├── network/     # DTOs e conversão JSON
+│   │   └── server/      # ServidorTCP e ClientHandler
+│   └── src/test/java/   # testes de concorrência
+├── vaijunto-client/
+│   ├── pom.xml
+│   ├── Dockerfile
+│   └── src/main/java/
+│       ├── client/      # cliente TCP e chamadas do protocolo
+│       ├── com/vaijunto/ # classe principal e telas JavaFX
+│       ├── model/       # enums compartilhados
+│       ├── network/     # DTOs e conversão JSON
+│       ├── sessao/      # sessão do usuário
+│       └── util/        # tarefas assíncronas da interface
+└── README.md
+```
+
+Os módulos são Maven independentes e devem ser compilados a partir de suas
+respectivas pastas. As principais dependências são:
+
+| Módulo | Dependências |
+|---|---|
+| Servidor | Gson 2.10.1, JUnit 4.13.2 (testes) |
+| Cliente | Gson 2.10.1, JavaFX Controls 21.0.2, JavaFX FXML 21.0.2, JUnit 4.13.2 (testes) |
+
+O servidor usa o plugin Assembly para gerar o JAR executável
+`target/vaijunto-server-1.0-SNAPSHOT-jar-with-dependencies.jar`. O cliente usa
+o plugin JavaFX Maven, com `com.vaijunto.App` como classe principal.
+
+## Preparação, compilação e testes
+
+Com Java 21 e Maven instalados, execute:
+
+```bash
+# Compilar e testar o servidor
+cd vaijunto-server
+mvn clean test
+
+# Gerar o JAR executável do servidor
+mvn package
+
+# Compilar e testar o cliente
+cd ../vaijunto-client
+mvn clean test
+```
+
+Os artefatos compilados ficam em `target/` dentro de cada módulo. O cliente
+JavaFX precisa de um ambiente gráfico compatível; em Linux, as bibliotecas
+nativas são obtidas pelo Maven usando o classificador `linux`.
+
 ### Servidor
 
 ```bash
@@ -33,6 +92,48 @@ mvn javafx:run
 ```
 
 O host e a porta padrão podem ser substituídos pelas variáveis `VAIJUNTO_SERVER_HOST` e `VAIJUNTO_SERVER_PORT`.
+
+### Configuração e execução com Docker
+
+Os Dockerfiles são independentes e devem ser construídos dentro do diretório
+do módulo correspondente. O build instala/obtém as dependências declaradas no
+`pom.xml`, compila o código com Java 21 e falha se houver erro de compilação.
+
+#### Servidor
+
+```bash
+docker build -t vaijunto-server ./vaijunto-server
+docker run --rm --name vaijunto-server -p 8080:8080 vaijunto-server
+```
+
+O container do servidor não usa banco de dados nem volume: usuários, sessões,
+caronas e reservas ficam em memória e são perdidos quando o container termina.
+
+#### Cliente JavaFX
+
+O Dockerfile do cliente instala as bibliotecas nativas GTK/X11 exigidas pelo
+JavaFX, define `DISPLAY=:0`, baixa as dependências Maven e executa
+`javafx:run`. Em um Linux com X11, o cliente pode ser iniciado assim:
+
+```bash
+xhost +local:docker
+docker build -t vaijunto-client ./vaijunto-client
+docker run --rm \
+  --name vaijunto-client \
+  --network host \
+  -e DISPLAY=$DISPLAY \
+  -e VAIJUNTO_SERVER_HOST=127.0.0.1 \
+  -e VAIJUNTO_SERVER_PORT=8080 \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  vaijunto-client
+```
+
+Em uma rede Docker criada pelo usuário, substitua `--network host` por
+`--network <rede>` e use `VAIJUNTO_SERVER_HOST` com o nome ou endereço
+alcançável do container do servidor. Em ambientes sem X11, como servidores
+sem interface gráfica ou Docker Desktop, o servidor pode ser executado
+normalmente, mas o cliente JavaFX precisa de um display compatível (por
+exemplo, X11 ou XWayland).
 
 ## Especificação do protocolo de aplicação
 
