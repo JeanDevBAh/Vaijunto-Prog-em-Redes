@@ -481,17 +481,6 @@ Quando o cliente encerra a conexão, o `readLine()` retorna `null`. Nesse caso, 
 
 O cliente utiliza a classe `VaiJuntoClient.java`, que encapsula a criação do socket, o envio das mensagens e o recebimento das respostas.
 
-### TCP
-
-O TCP foi escolhido porque o sistema precisa de:
-
-- entrega confiável das mensagens;
-- preservação da ordem das requisições;
-- conexão persistente;
-- retransmissão automática em caso de perda de pacotes;
-- controle de fluxo entre cliente e servidor.
-
----
 
 ## 3. Protocolo de API remota
 
